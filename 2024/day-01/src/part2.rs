@@ -31,6 +31,6 @@ mod tests {
         1   3
         3   9
         3   3";
-        assert_eq!(31, calculate_similarity(input));
+        assert_eq!(calculate_similarity(input), 31);
     }
 }

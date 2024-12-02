@@ -31,6 +31,6 @@ mod tests {
         1   3
         3   9
         3   3";
-        assert_eq!(11, calculate_distance(input));
+        assert_eq!(calculate_distance(input), 11);
     }
 }

@@ -1,16 +1,13 @@
-pub fn find_xmas(input: &str) -> i32 {
+use std::collections::HashMap;
+
+pub fn find_x_mas(input: &str) -> i32 {
     let grid: Vec<Vec<char>> = input
         .lines()
         .map(|line| line.trim().chars().collect())
         .collect();
-    let target = "XMAS";
-    let mut result = 0;
+    let target = "MAS";
 
-    let directions: [(isize, isize); 8] = [
-        (0, 1),   //right
-        (0, -1),  //left
-        (1, 0),   //down
-        (-1, 0),  //up
+    let directions: [(isize, isize); 4] = [
         (1, 1),   //down-right
         (-1, -1), //up-left
         (1, -1),  //down-left
@@ -21,6 +18,8 @@ pub fn find_xmas(input: &str) -> i32 {
     let cols = grid[0].len();
     let word_chars: Vec<char> = target.chars().collect();
     let word_len = word_chars.len();
+    let middle = (word_len - 1) / 2;
+    let mut midpoints: HashMap<(isize, isize), usize> = HashMap::new();
 
     for i in 0..rows {
         for j in 0..cols {
@@ -44,14 +43,23 @@ pub fn find_xmas(input: &str) -> i32 {
                     }
 
                     if match_found {
-                        result += 1;
+                        let (mid_x, mid_y) = (
+                            i as isize + middle as isize * dir_x,
+                            j as isize + middle as isize * dir_y,
+                        );
+                        *midpoints.entry((mid_x, mid_y)).or_insert(0) += 1;
                     }
                 }
             }
         }
     }
 
-    result
+    midpoints
+        .iter()
+        .filter(|&(_, &count)| count > 1)
+        .map(|(&midpoint, _)| midpoint)
+        .collect::<Vec<(isize, isize)>>()
+        .len() as i32
 }
 
 #[cfg(test)]
@@ -71,6 +79,6 @@ mod tests {
             SAXAMASAAA
             MAMMMXMMMM
             MXMXAXMASX";
-        assert_eq!(find_xmas(input), 18);
+        assert_eq!(find_x_mas(input), 9);
     }
 }
